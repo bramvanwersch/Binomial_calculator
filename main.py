@@ -123,7 +123,12 @@ class MainGui(Frame):
     def _get_succes_probability_info(self):
         str_prob = self.succes_probability_input.get()
         try:
-            value = float(str_prob)
+            if "/" in str_prob:
+                value = self._disect_division_notation(str_prob)
+            else:
+                value = float(str_prob)
+            if value is None:
+                return None
             if value < 0 or value > 1:
                 self._warning_text.set("The succes probability has to be between 0 and 1")
                 return None
@@ -131,6 +136,19 @@ class MainGui(Frame):
         except ValueError:
             self._set_conversion_warning("succes probability", str_prob, float)
             return None
+
+    def _disect_division_notation(self, str_prob):
+        num1, num2 = str_prob.split("/")
+        try:
+            num1 = float(num1.strip())
+            num2 = float(num2.strip())
+        except ValueError:
+            self._set_conversion_warning("succes probability", str_prob, float)
+            return
+        if num2 == 0:
+            self._warning_text.set("Cannot divide by 0")
+            return
+        return num1 / num2
 
     def _get_total_successes_info(self):
         str_prob = self.number_succeses_input.get()
@@ -165,9 +183,12 @@ class MainGui(Frame):
             total_succeses = self._get_total_successes_info()
             if total_succeses is None:
                 total_succeses = -1
-            self.graph = BinomialDistributionGraph(self.graph_frame, self._generate_binomial_graph_data(),
-                                                   total_succeses)
-            self.graph.grid(row=0, column=0)
+            try:
+                self.graph = BinomialDistributionGraph(self.graph_frame, self._generate_binomial_graph_data(),
+                                                       total_succeses)
+                self.graph.grid(row=0, column=0)
+            except ZeroDivisionError:
+                self._warning_text.set("Cannot draw graph. Not enough data points")
         else:
             self.graph_frame.grid_forget()
             self.graph_frame = None
