@@ -1,4 +1,15 @@
 from math import factorial
+from threading import Thread
+
+
+class BinomialDistributionThread(Thread):
+
+    def __init__(self, distribution, ):
+        super().__init__(daemon=True)
+        self.distribution = distribution
+
+    def start(self) -> None:
+        self.distribution
 
 
 class BinomialDistribution:
@@ -21,18 +32,11 @@ class BinomialDistribution:
         probabilities = []
         cumulative_probability = 0.0
         no_succeses = 0
-        while cumulative_probability < 0.5:
+        while cumulative_probability < 1.0 and no_succeses <= total_trials:
             probability = self._binomial_probability(no_succeses, total_trials)
             probabilities.append(probability)
             cumulative_probability += probability
             no_succeses += 1
-        # in the case where exactly 0.5 probability is reached and otherwise a datapoitn is ignored or added to much
-        if cumulative_probability == 0.5:
-            reverse_probabilities = probabilities[:]
-        else:
-            reverse_probabilities = probabilities[:-1]
-        reverse_probabilities.reverse()
-        probabilities = probabilities + reverse_probabilities
         return probabilities
 
     def _binomial_probability(self, no_successes, total_trials):
