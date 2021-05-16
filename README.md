@@ -16,3 +16,8 @@ To make it a bit clearer here an example with a coin:
 The probability of a fair coin landing on heads is 0.5. So for the Succes probability we fill in 0.5. We trow the coin 100 times, meaning the Total trials is set to 100.
 We observe heads 35 times out of a 100. So, we fill in 35 for the number of succeses. We can now see that this is very unlikely with a cumulative probability to observe this
 number of heads or a lower number at 0.00089. See the image to see what it looks like in the GUI.
+
+
+
+
+![alt text](src/images/example.png "Coin example image")
