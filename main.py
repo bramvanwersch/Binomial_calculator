@@ -33,7 +33,7 @@ class MainGui(Frame):
         self.calculate_button.grid(row=2, column=1, padx=self.PAD_SIZE, pady=self.PAD_SIZE)
 
         self.show_graph_button = Checkbutton(self, text="Show graph", variable=self._is_graph_active,
-                                             command=self._generate_graph)
+                                             command=self._toggle_graph)
         self.show_graph_button.grid(row=2, column=2, padx=self.PAD_SIZE, pady=self.PAD_SIZE)
 
     def __init_input_frame(self):
@@ -106,8 +106,9 @@ class MainGui(Frame):
         self.cumulative4_probability_out_lbl.grid(row=4, column=1, padx=self.PAD_SIZE, pady=self.PAD_SIZE, sticky=W)
 
     def __init_graph_frame(self):
-        self.graph_frame = LabelFrame(self, relief=GROOVE, text="Distribution:")
-        self.graph_frame.grid(row=0, column=7, rowspan=3, padx=self.PAD_SIZE, pady=self.PAD_SIZE, sticky=W)
+        if self.graph_frame is None:
+            self.graph_frame = LabelFrame(self, relief=GROOVE, text="Distribution:")
+            self.graph_frame.grid(row=0, column=7, rowspan=3, padx=self.PAD_SIZE, pady=self.PAD_SIZE, sticky=W)
 
     def generate_binomial_result(self):
         self._warning_text.set("")
@@ -125,14 +126,22 @@ class MainGui(Frame):
             return
         self.set_binomial_result(result)
         if self.graph_frame is not None:
-            self._generate_graph()
+            self._toggle_graph()
 
     def set_binomial_result(self, result):
-        self._binomial_probability.set(f"{result[0]:.2f}")
-        self._cumulative1.set(f"{result[1]:.2f}")
-        self._cumulative2.set(f"{result[2]:.2f}")
-        self._cumulative3.set(f"{result[3]:.2f}")
-        self._cumulative4.set(f"{result[4]:.2f}")
+        self._binomial_probability.set(self._get_correctly_rounded_result_value(result[0]))
+        self._cumulative1.set(self._get_correctly_rounded_result_value(result[1]))
+        self._cumulative2.set(self._get_correctly_rounded_result_value(result[2]))
+        self._cumulative3.set(self._get_correctly_rounded_result_value(result[3]))
+        self._cumulative4.set(self._get_correctly_rounded_result_value(result[4]))
+
+    def _get_correctly_rounded_result_value(self, value):
+        value = round(value, 5)
+        if value == 1:
+            value = ">0.99999"
+        elif value == 0:
+            value = "<0.00001"
+        return value
 
     def _get_succes_probability_info(self):
         str_prob = self.succes_probability_input.get()
@@ -191,21 +200,26 @@ class MainGui(Frame):
     def _set_conversion_warning(self, origin, value, type_):
         self._warning_text.set(f"'{value}' of {origin} cannot be converted to a {type_}.")
 
-    def _generate_graph(self):
+    def _toggle_graph(self):
         if self._is_graph_active.get():
-            self.__init_graph_frame()
-            total_succeses = self._get_total_successes_info()
-            if total_succeses is None:
-                total_succeses = -1
-            try:
-                self.graph = BinomialDistributionGraph(self.graph_frame, self._generate_binomial_graph_data(),
-                                                       total_succeses)
-                self.graph.grid(row=0, column=0)
-            except ZeroDivisionError:
-                self._warning_text.set("Cannot draw graph. Not enough data points")
+            self._generate_graph()
         else:
             self.graph_frame.grid_forget()
             self.graph_frame = None
+
+    def _generate_graph(self):
+        self.__init_graph_frame()
+        total_succeses = self._get_total_successes_info()
+        if total_succeses is None:
+            total_succeses = -1
+        try:
+            if self.graph is not None:
+                self.graph.grid_forget()
+            self.graph = BinomialDistributionGraph(self.graph_frame, self._generate_binomial_graph_data(),
+                                                   total_succeses)
+            self.graph.grid(row=0, column=0)
+        except ZeroDivisionError:
+            self._warning_text.set("Cannot draw graph. Not enough data points")
 
     def _generate_binomial_graph_data(self):
         self._warning_text.set("")
