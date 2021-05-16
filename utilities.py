@@ -16,7 +16,7 @@ class ToolTip:
     """
     create a tooltip for a given widget
     """
-    def __init__(self, widget, text='canvas info', bg='#FFFFEA', pad=(5, 3, 5, 3),  waittime=50,
+    def __init__(self, widget, text='canvas info', bg='#FFFFEA', pad=(0, 0, 0, 0),  waittime=50,
                  wraplength=250):
         self.waittime = waittime     # miliseconds
         self.wraplength = wraplength   # pixels

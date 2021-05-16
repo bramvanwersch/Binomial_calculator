@@ -43,7 +43,7 @@ class MainGui(Frame):
         succes_probability_lbl = Label(self.input_frame, text="Succes probability:")
         succes_probability_lbl.grid(row=0, column=0, pady=self.PAD_SIZE, sticky=W)
         ToolTip(succes_probability_lbl, "The chance that a given action is a succes. Can be supplied as"
-                                              " a fraction or as a divisional")
+                                        " a fraction or as a divisional")
 
         self.succes_probability_input = Entry(self.input_frame)
         self.succes_probability_input.grid(row=0, column=1, padx=self.PAD_SIZE, pady=self.PAD_SIZE, sticky=W)
@@ -68,30 +68,39 @@ class MainGui(Frame):
 
         binomial_probability_lbl = Label(self.output_frame, text="P(X = x):")
         binomial_probability_lbl.grid(row=0, column=0, padx=self.PAD_SIZE, pady=self.PAD_SIZE, sticky=W)
+        ToolTip(binomial_probability_lbl, "Exact probability of the number of succeses")
 
         self.binomial_probability_out_lbl = Label(self.output_frame, textvariable=self._binomial_probability)
         self.binomial_probability_out_lbl.grid(row=0, column=1, padx=self.PAD_SIZE, pady=self.PAD_SIZE, sticky=W)
 
         cumulative1_probability_lbl = Label(self.output_frame, text="P(X < x):")
         cumulative1_probability_lbl.grid(row=1, column=0, padx=self.PAD_SIZE, pady=self.PAD_SIZE, sticky=W)
+        ToolTip(cumulative1_probability_lbl, "Cumulative probability for number of succeses - 1 and any number"
+                                             " of succeses smaller than that")
 
         self.cumulative1_probability_out_lbl = Label(self.output_frame, textvariable=self._cumulative1)
         self.cumulative1_probability_out_lbl.grid(row=1, column=1, padx=self.PAD_SIZE, pady=self.PAD_SIZE, sticky=W)
 
         cumulative2_probability_lbl = Label(self.output_frame, text="P(X <= x):")
         cumulative2_probability_lbl.grid(row=2, column=0, padx=self.PAD_SIZE, pady=self.PAD_SIZE, sticky=W)
+        ToolTip(cumulative2_probability_lbl, "Cumulative probability for number of succeses and any number of succeses "
+                                             "smaller than that")
 
         self.cumulative2_probability_out_lbl = Label(self.output_frame, textvariable=self._cumulative2)
         self.cumulative2_probability_out_lbl.grid(row=2, column=1, padx=self.PAD_SIZE, pady=self.PAD_SIZE, sticky=W)
 
         cumulative3_probability_lbl = Label(self.output_frame, text="P(X > x):")
         cumulative3_probability_lbl.grid(row=3, column=0, padx=self.PAD_SIZE, pady=self.PAD_SIZE, sticky=W)
+        ToolTip(cumulative3_probability_lbl, "Cumulative probability for number of succeses + 1 and any number"
+                                             " of succeses larger than that")
 
         self.cumulative3_probability_out_lbl = Label(self.output_frame, textvariable=self._cumulative3)
         self.cumulative3_probability_out_lbl.grid(row=3, column=1, padx=self.PAD_SIZE, pady=self.PAD_SIZE, sticky=W)
 
         cumulative4_probability_lbl = Label(self.output_frame, text="P(X >= x):")
         cumulative4_probability_lbl.grid(row=4, column=0, padx=self.PAD_SIZE, pady=self.PAD_SIZE, sticky=W)
+        ToolTip(cumulative4_probability_lbl, "Cumulative probability for number of succeses and any number of succeses "
+                                             "larger than that")
 
         self.cumulative4_probability_out_lbl = Label(self.output_frame, textvariable=self._cumulative4)
         self.cumulative4_probability_out_lbl.grid(row=4, column=1, padx=self.PAD_SIZE, pady=self.PAD_SIZE, sticky=W)
@@ -230,11 +239,11 @@ def maingui():
     Starting point of the gui and mainloop
     """
     root = Tk()
-    # if sys.platform == 'win32':
-    #     try:
-    #         root.iconbitmap(default='{}{}visual_copys{}mgb.ico'.format(MGBPATH, os.sep, os.sep))
-    #     except Exception:
-    #         pass
+    if sys.platform == 'win32':
+        try:
+            root.iconbitmap("images\\logo.ico")
+        except Exception as e:
+            pass
     root.title('Binomial Distributions')
 
     MainGui(root)
