@@ -1,6 +1,7 @@
 from tkinter import *
 from math import ceil, log10
 from utilities import CanvasTooltip
+from utilities import readable_round_result
 
 
 class Point:
@@ -156,8 +157,10 @@ class BinomialDistributionGraph(Frame):
                 else:
                     color = self.HIGHER_COLOR
             id_ = self.graph.create_rectangle(pixel_point.x - 3, pixel_point.y, pixel_point.x + 3, bottom_y, fill=color)
-            CanvasTooltip(self.graph, id_, text=f"P(X={x}): {point.y:.5f}\n"
-                                                f"P(X<={x}): {sum([point.y for point in points[:index + 1]]):5f}")
+            y_readable = readable_round_result(point.y, 5)
+            cum_readable = readable_round_result(sum([point.y for point in points[:index + 1]]), 5)
+            CanvasTooltip(self.graph, id_, text=f"P(X={x}): {y_readable}\n"
+                                                f"P(X<={x}): {cum_readable}")
 
     def __points_to_pixels(self, *points):
         """

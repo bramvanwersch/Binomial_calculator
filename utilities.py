@@ -12,6 +12,15 @@ import tkinter as tk
 import tkinter.ttk as ttk
 
 
+def readable_round_result(value, nr_after_comma):
+    value = round(value, nr_after_comma)
+    if value == 1:
+        value = f">0.{'9' * nr_after_comma}"
+    elif value == 0:
+        value = f"<0.{'0' * (nr_after_comma - 1)}1"
+    return value
+
+
 class ToolTip:
     """
     create a tooltip for a given widget

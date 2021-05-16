@@ -1,7 +1,7 @@
 from tkinter import *
 from binomial_distribution import *
 from distribution_graph import *
-from utilities import ToolTip
+from utilities import ToolTip, readable_round_result
 
 
 class MainGui(Frame):
@@ -129,19 +129,11 @@ class MainGui(Frame):
             self._toggle_graph()
 
     def set_binomial_result(self, result):
-        self._binomial_probability.set(self._get_correctly_rounded_result_value(result[0]))
-        self._cumulative1.set(self._get_correctly_rounded_result_value(result[1]))
-        self._cumulative2.set(self._get_correctly_rounded_result_value(result[2]))
-        self._cumulative3.set(self._get_correctly_rounded_result_value(result[3]))
-        self._cumulative4.set(self._get_correctly_rounded_result_value(result[4]))
-
-    def _get_correctly_rounded_result_value(self, value):
-        value = round(value, 5)
-        if value == 1:
-            value = ">0.99999"
-        elif value == 0:
-            value = "<0.00001"
-        return value
+        self._binomial_probability.set(readable_round_result(result[0], 5))
+        self._cumulative1.set(readable_round_result(result[1], 5))
+        self._cumulative2.set(readable_round_result(result[2], 5))
+        self._cumulative3.set(readable_round_result(result[3], 5))
+        self._cumulative4.set(readable_round_result(result[4], 5))
 
     def _get_succes_probability_info(self):
         str_prob = self.succes_probability_input.get()
@@ -243,7 +235,7 @@ class MainGui(Frame):
         if max_remove_points <= 0:
             return points
         sorted_points = sorted(points, key=lambda x: x.y)
-        min_y = 0.001 * sorted_points[-1]
+        min_y = 0.001 * sorted_points[-1].y
         index = 0
         for index, point in enumerate(sorted_points):
             if point.y >= min_y or index >= max_remove_points:
