@@ -1,6 +1,7 @@
 from tkinter import *
 from binomial_distribution import *
 from distribution_graph import *
+from utilities import ToolTip
 
 
 class MainGui(Frame):
@@ -41,18 +42,22 @@ class MainGui(Frame):
 
         succes_probability_lbl = Label(self.input_frame, text="Succes probability:")
         succes_probability_lbl.grid(row=0, column=0, pady=self.PAD_SIZE, sticky=W)
+        ToolTip(succes_probability_lbl, "The chance that a given action is a succes. Can be supplied as"
+                                              " a fraction or as a divisional")
 
         self.succes_probability_input = Entry(self.input_frame)
         self.succes_probability_input.grid(row=0, column=1, padx=self.PAD_SIZE, pady=self.PAD_SIZE, sticky=W)
 
         total_trials_lbl = Label(self.input_frame, text="Total trials:")
         total_trials_lbl.grid(row=1, column=0, padx=self.PAD_SIZE, pady=self.PAD_SIZE, sticky=W)
+        ToolTip(total_trials_lbl, "Total amount of actions performed")
 
         self.total_trials_input = Entry(self.input_frame)
         self.total_trials_input.grid(row=1, column=1, padx=self.PAD_SIZE, pady=self.PAD_SIZE, sticky=W)
 
-        number_succeses_lbl = Label(self.input_frame, text="No successes:")
+        number_succeses_lbl = Label(self.input_frame, text="No. successes:")
         number_succeses_lbl.grid(row=2, column=0, padx=self.PAD_SIZE, pady=self.PAD_SIZE, sticky=W)
+        ToolTip(number_succeses_lbl, "Number of successes out of the total trials")
 
         self.number_succeses_input = Entry(self.input_frame)
         self.number_succeses_input.grid(row=2, column=1, padx=self.PAD_SIZE, pady=self.PAD_SIZE, sticky=W)

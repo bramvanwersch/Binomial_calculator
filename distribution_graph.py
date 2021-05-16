@@ -1,6 +1,7 @@
 from tkinter import *
 from random import sample
 from math import ceil, log10
+from utilities import CanvasTooltip
 
 
 class Point:
@@ -144,7 +145,8 @@ class BinomialDistributionGraph(Frame):
         color = self.LOWER_COLOR
         for index in range(0, len(pixel_points), step):
             pixel_point = pixel_points[index]
-            x = points[index].x
+            point = points[index]
+            x = point.x
             if x < succes_number:
                 color = self.LOWER_COLOR
             elif x == succes_number:
@@ -154,7 +156,8 @@ class BinomialDistributionGraph(Frame):
                     color = self.EXACT_COLOR
                 else:
                     color = self.HIGHER_COLOR
-            self.graph.create_rectangle(pixel_point.x - 3, pixel_point.y, pixel_point.x + 3, bottom_y, fill=color)
+            id_ = self.graph.create_rectangle(pixel_point.x - 3, pixel_point.y, pixel_point.x + 3, bottom_y, fill=color)
+            CanvasTooltip(self.graph, id_, text=f"P(X=x): {point.y:.5f}")
 
     def __points_to_pixels(self, *points):
         """
