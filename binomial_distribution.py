@@ -9,7 +9,7 @@ class BinomialDistributionThread(Thread):
         self.distribution = distribution
 
     def start(self) -> None:
-        self.distribution
+        self.distribution()
 
 
 class BinomialDistribution:
@@ -17,18 +17,9 @@ class BinomialDistribution:
     def __init__(self, succes_probability):
         self.probability_of_succes = succes_probability
         self.probability_of_failure = 1 - self.probability_of_succes
+        self.result = None
 
-    def get_succes_probabilites(self, total_trials, total_successes):
-        if total_trials < total_successes:
-            raise ValueError(f"Total trials has to be bigger than or equal to total "
-                             f"successes")
-        probabilities = []
-        for no_successes in range(total_successes + 1):
-            probability = self._binomial_probability(no_successes, total_trials)
-            probabilities.append(probability)
-        return BinomialResult(probabilities)
-
-    def get_distribution_probabilities(self, total_trials):
+    def calculate_distribution_probabilities(self, total_trials):
         probabilities = []
         cumulative_probability = 0.0
         no_succeses = 0
@@ -37,7 +28,7 @@ class BinomialDistribution:
             probabilities.append(probability)
             cumulative_probability += probability
             no_succeses += 1
-        return probabilities
+        self.result = BinomialResult(probabilities)
 
     def _binomial_probability(self, no_successes, total_trials):
         first_part = factorial(total_trials) / \
@@ -49,25 +40,29 @@ class BinomialDistribution:
 
 class BinomialResult:
 
-    def __init__(self, succes_probabilities):
-        self._succes_probabilities = succes_probabilities
-        self.binomial_probability = self._succes_probabilities[-1]
-        self.cumulative_smaller_then = sum(self._succes_probabilities[:-1])
-        self.cumulative_smaller_then_or_equal = sum(self._succes_probabilities)
-        self.cumulative_larger_then = 1 - self.cumulative_smaller_then_or_equal
-        self.cumulative_larger_then_or_equal = 1 - self.cumulative_smaller_then
+    def __init__(self, all_probabilities):
+        self.all_probabilities = all_probabilities
 
-    def __getitem__(self, item):
-        return self.all_results()[item]
+    def binomial_probability(self, nr_succeses):
+        return self.all_probabilities[nr_succeses - 1]
 
-    def all_results(self):
-        return [
-            self.binomial_probability,
-            self.cumulative_smaller_then,
-            self.cumulative_smaller_then_or_equal,
-            self.cumulative_larger_then,
-            self.cumulative_larger_then_or_equal
-        ]
+    def cumulative_smaller_then(self, nr_succeses):
+        return sum(self.all_probabilities[:nr_succeses - 1])
+
+    def cumulative_smaller_then_or_equal(self, nr_succeses):
+        return sum(self.all_probabilities[:nr_succeses])
+
+    def cumulative_greater_then(self, nr_succeses):
+        return sum(self.all_probabilities[nr_succeses + 1:])
+
+    def cumulative_greater_then_or_equal(self, nr_succeses):
+        return sum(self.all_probabilities[nr_succeses:])
+
+    def __len__(self):
+        return len(self.all_probabilities)
+
+    def __iter__(self):
+        return iter(self.all_probabilities)
 
 
 if __name__ == '__main__':
