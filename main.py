@@ -239,13 +239,17 @@ class MainGui(Frame):
         return filtered_points
 
     def _filter_low_points(self, points):
-        max_point = max(points, key=lambda x: x.y)
-        min_y = 0.001 * max_point.y
-        filtered_points = []
-        for point in points:
-            if point.y >= min_y:
-                filtered_points.append(point)
-        return filtered_points
+        max_remove_points = len(points) - BinomialDistributionGraph.MAX_DATA_POINTS
+        if max_remove_points <= 0:
+            return points
+        sorted_points = sorted(points, key=lambda x: x.y)
+        min_y = 0.001 * sorted_points[-1]
+        index = 0
+        for index, point in enumerate(sorted_points):
+            if point.y >= min_y or index >= max_remove_points:
+                break
+        unsorted_points = sorted(sorted_points[index:], key=lambda x: x.x)
+        return unsorted_points
 
 
 def maingui():
